@@ -1,0 +1,66 @@
+.make-posts {
+    width: 600px;
+    display: flex;
+    text-align: center;
+    flex-direction: column;
+    align-items: center;
+}
+
+.make-posts h2 {
+    margin: 30px;
+}
+
+/* form 설정 */
+.make-posts-form {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.make-posts-form h3 {
+    margin: 15px 15px 15px 30px;
+}
+
+.make-posts-form input:focus {
+    outline: none /* input 박스 포커스 설정 */
+}
+
+.make-posts-form textarea:focus {
+    outline: none;
+}
+
+.posts-title-make {
+    margin: 20px;
+    padding: 10px;
+    width: 540px;
+    border: none;
+    background-color: transparent;
+}
+
+.posts-file-make {
+    margin: 0px 0px 30px 30px;
+}
+
+.posts-contents-make {
+    margin: 20px;
+    padding: 10px;
+    width: 540px;
+    height: 300px;
+    border: none;
+    background-color: transparent;
+}
+
+.posts-make-button-container {
+    width: 100%;
+    align-items: center;
+}
+
+.posts-make-button-container button {
+    border-radius: 0;
+    background-color: #7F6AEE;
+    width: 350px;
+}
+
+.form-row-helper {
+    margin: 25px;
+}

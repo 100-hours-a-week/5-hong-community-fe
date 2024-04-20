@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" type="text/css" href="/css/header.css">
+  <link rel="stylesheet" type="text/css" href="/css/global.css">
+  <link rel="stylesheet" type="text/css" href="/css/posts-detail.css">
+  <link rel="stylesheet" type="text/css" href="/css/modal.css">
+
+  <title>community-layout by hong.kim</title>
+</head>
+
+<body>
+<section class="wrap">
+  <!-- 헤더 -->
+  <header>
+    <div class="header-container">
+      <div class="header-nav-before" id="go-back">&lt;</div>
+
+      <div class="header-text">
+        <h1>아무 말 대잔치</h1>
+      </div>
+
+      <!-- TODO: 로그인 되어있으면 이미지가 보이나?-->
+      <div class="header-image">
+        <img src="https://avatars.githubusercontent.com/u/144337839?v=4" class="circle-image" width="36">
+        <div class="dropdown-content">
+          <a href="/update-profile">회원정보수정</a>
+          <a href="/update-password">비밀번호수정</a>
+          <a href="/">로그아웃</a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <article class="posts">
+    <!-- 게시글 상단 -->
+    <div class="posts-detail">
+      <!--      <div class="posts-detail-title">-->
+      <!--        <h1>제목1</h1>-->
+      <!--      </div>-->
+
+      <!--      <div class="posts-owner-detail-container">-->
+      <!--        <div class="posts-info">-->
+      <!--          <div class="posts-owner-info">-->
+      <!--            <img src="#" class="circle-image" id="owner-profile">-->
+      <!--            <p><span class="highlight"></span></p>-->
+      <!--          </div>-->
+
+      <!--          <div class="posts-date-time">-->
+      <!--            <p>2021-01-01 00:00:00</p>-->
+      <!--          </div>-->
+      <!--        </div>-->
+
+      <!--        <div class="edit-button-container">-->
+      <!--          <button class="edit-button">수정</button>-->
+      <!--          <button class="delete-button">삭제</button>-->
+      <!--        </div>-->
+      <!--      </div>-->
+    </div>
+
+    <hr class="horizontal-line">
+
+    <!-- 게시글 부분 -->
+    <div class="posts-body">
+      <!--      <div class="posts-thumbnail">-->
+      <!--        <div class="rectangle">-->
+      <!--          <img src="#" alt="posts thumbnail" id="thumbnail">-->
+      <!--        </div>-->
+      <!--      </div>-->
+
+      <!--      <div class="posts-content">-->
+      <!--        무엇을 얘기할까요? 아무말이라면, 삶은 항상 놀라운 모험이라고 생각합니다. 우리는 매일 새로운 경험을 하고 배우며 성장합니다. 때로는 어려움과 도전이 있지만, 그것들이 우리를 더 강하고 지혜롭게-->
+      <!--        만듭니다. 또한 우리는 주변의 사람들과 연결되며 사랑과 지지를 받습니다. 그래서 우리의 삶은 소중하고 의미가 있습니다.<br>-->
+      <!--        자연도 아름다운 이야기입니다. 우리 주변의 자연은 끝없는 아름다움과 신비로움을 담고 있습니다. 산, 바다, 숲, 하늘 등 모든 것이 우리를 놀라게 만들고 감동시킵니다. 자연은 우리의 생명과 안정을-->
+      <!--        지키며 우리에게 힘을 주는 곳입니다.<br>-->
+      <!--        마지막으로, 지식을 향한 탐구는 항상 흥미로운 여정입니다. 우리는 끝없는 지식의 바다에서 배우고 발견할 수 있으며, 이것이 우리를 더 깊이 이해하고 세상을 더 넓게 보게 해줍니다.<br>-->
+      <!--        그런 의미에서, 삶은 놀라움과 경이로움으로 가득 차 있습니다. 새로운 경험을 즐기고 항상 앞으로 나아가는 것이 중요하다고 생각합니다.-->
+      <!--      </div>-->
+
+      <!--      <div class="metadata-box-container">-->
+      <!--        <div class="metadata-box">-->
+      <!--          <span class="metadata-value">123</span>-->
+      <!--          <span class="metadata-label">조회수</span>-->
+      <!--        </div>-->
+      <!--        <div class="metadata-box">-->
+      <!--          <span class="metadata-value">123</span>-->
+      <!--          <span class="metadata-label">댓글</span>-->
+      <!--        </div>-->
+      <!--      </div>-->
+    </div>
+
+    <hr class="horizontal-line">
+
+    <!-- 게시글 하단 댓글 등록 및 목록-->
+    <div class="comments-container">
+      <form class="comments-box-container">
+        <textarea class="comments-input-box" type="text" id="comments" name="comments"
+                  placeholder="댓글을 남겨주세요!"></textarea>
+
+        <hr class="horizontal-line">
+
+        <div class="summit-button-container">
+          <button type="submit" id="comments-button">댓글 등록</button>
+        </div>
+      </form>
+
+      <div class="comments-list-container">
+
+        <!-- 각 댓글 한개 예시 - 1 -->
+        <!--        <div class="comments-info">-->
+        <!--          <div class="comments-owner-info">-->
+        <!--            <img src="https://avatars.githubusercontent.com/u/144337839?v=4" class="circle-image">-->
+        <!--            <p><span class="highlight">더미 작성자</span></p>-->
+        <!--            <p><span class="date-time">2021-01-01 00:00:00</span></p>-->
+
+        <!--            <div class="comments-button-container">-->
+        <!--              <button class="edit-button">수정</button>-->
+        <!--              <button class="delete-button">삭제</button>-->
+        <!--            </div>-->
+        <!--          </div>-->
+
+        <!--          <div class="comments-contents">-->
+        <!--            <p>댓글 내용</p>-->
+        <!--          </div>-->
+        <!--        </div>-->
+        <!-- 각 댓글 한개 예시 종료 :: Loop -->
+
+      </div>
+    </div>
+  </article>
+
+</section>
+
+<!-- Modal 창 -->
+<div class="modal">
+  <div class="modal-content">
+    <p><span class="modal-content-title">게시글을 삭제하시겠습니까?</span></p>
+    <p><span class="modal-content-warn">삭제한 내용은 복구 할 수 없습니다.</span></p>
+    <div class="modal-button-container">
+      <button class="close" id="modal-close">취소</button>
+      <button class="ok" id="modal-ok">확인</button>
+    </div>
+  </div>
+</div>
+
+<script src="/js/posts/posts-details.js" type="module"></script>
+<script src="/js/common/header.js" type="module"></script>
+
+</body>
+
+</html>

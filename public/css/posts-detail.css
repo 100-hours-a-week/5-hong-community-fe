@@ -1,0 +1,203 @@
+@import "reset.css";
+
+.posts {
+    width: 600px;
+    display: flex;
+    text-align: center;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+
+/* 게시글 최상단 */
+.posts-detail {
+    padding-top: 20px;
+    width: 560px;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    gap: 10px;
+}
+
+.posts-detail h1 {
+    font-size: 25px;
+    margin: 0;
+}
+
+.posts-detail-title {
+    width: 100%;
+    /* display: flex; */
+    text-align: left;
+}
+
+.posts-owner-detail-container {
+    display: flex;
+    justify-content: space-between;
+}
+
+.posts-info {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 20px;
+}
+
+.posts-owner-info {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    gap: 10px;
+}
+
+.posts-owner-info p {
+    font-size: 15px;
+}
+
+.edit-button-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.edit-button-container button {
+    width: 48px;
+    height: 26px;
+    text-align: center;
+    border: 1px solid #ACA0EB;
+    border-radius: 5px;
+    background-color: #F4F5F7;
+    color: #000;
+    font-size: 13px;
+    cursor: pointer;
+}
+
+/* 게시글 body */
+.posts-body {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.posts-thumbnail {
+    height: auto;
+    display: flex;
+    text-align: center;
+    justify-content: center;
+    padding: 0px 20px;
+}
+
+.rectangle {
+    width: 540px;
+    height: 300px;
+    background-color: lightgray;
+    overflow: hidden; /* 넘치는 부분은 숨김 */
+    position: relative; /* 자식 요소의 위치를 상대적으로 조절하기 위해 필요 */
+}
+
+.rectangle img {
+    width: 100%; /* 부모 요소에 가득 차도록 너비 설정 */
+    position: absolute; /* 이미지를 부모 요소 내에서 절대적으로 위치시킴 */
+    top: 50%; /* 부모 요소의 세로 중앙 위치 */
+    left: 50%; /* 부모 요소의 가로 중앙 위치 */
+    transform: translate(-50%, -50%); /* 이미지를 중앙 정렬하기 위한 변환 */
+}
+
+.posts-content {
+    text-align: left;
+    line-height: 1.5;
+}
+
+.metadata-box-container {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+}
+
+.metadata-box {
+    width: 90px;
+    height: 50px;
+    padding: 10px;
+    border-radius: 5px;
+    background-color: lightgray;
+    font-weight: bold;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+/* 댓글 부분 */
+.comments-container {
+    width: 600px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    gap: 10px;
+}
+
+.comments-box-container {
+    height: 169px;
+    background-color: white;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.comments-input-box {
+    width: 490px;
+    margin-top: 20px;
+    height: 100px;
+    border: none;
+    outline: none;
+}
+
+.summit-button-container {
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+    padding: 10px 0px;
+}
+
+.summit-button-container button {
+    margin-right: 10px;
+}
+
+/* 댓글들 */
+.comments-info {
+    padding: 0px 20px 20px 20px;
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+}
+
+.comments-owner-info {
+    display: flex;
+    gap: 20px;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.comments-button-container {
+    margin-top: 32px;
+    margin-left: auto;
+}
+
+.comments-button-container button {
+    width: 48px;
+    height: 26px;
+    text-align: center;
+    border: 1px solid #ACA0EB;
+    border-radius: 5px;
+    background-color: #F4F5F7;
+    color: #000;
+    font-size: 13px;
+    cursor: pointer;
+}
+
+.comments-contents {
+    padding-left: 59px;
+}

@@ -1,0 +1,26 @@
+[
+  {
+    "member_id": 1,
+    "email": "kinjihong@naver.com",
+    "password": "123!@#qwe",
+    "nickname": "hong.kim"
+  },
+  {
+    "member_id": 3,
+    "email": "kinjihong9598@gmail.com",
+    "password": "123!@#qwe",
+    "nickname": "뭘봐"
+  },
+  {
+    "member_id": 3,
+    "email": "user@example.com",
+    "password": "123!@#qwe",
+    "nickname": "김지홍"
+  },
+  {
+    "member_id": 4,
+    "email": "demo@example.com",
+    "password": "123!@#qwe",
+    "nickname": "하암"
+  }
+]

@@ -1,0 +1,37 @@
+@import "reset.css";
+
+.login {
+    width: 392px;
+    height: 90vh; /* 화면 전체 높이의 90%를 차지하도록 설정 */
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.login-text {
+    /* height: 39px; */
+    height: auto;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.signup-text {
+    margin-top: 10px;
+}
+
+.login-button {
+    margin-top: 15px;
+    width: 100%;
+    padding: 8px; /* 버튼 내부 여백 */
+    background-color: #ACA0EB;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer; /* 마우스 커서를 포인터로 변경하여 버튼임을 나타냄 */
+
+    &:hover {
+        background-color: #7F6AEE;
+    }
+}

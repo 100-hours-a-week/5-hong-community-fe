@@ -1,0 +1,87 @@
+@import "reset.css";
+
+/* TODO: 변수 명으로 지정하기*/
+
+.main {
+    width: 600px;
+    height: 90vh; /* 화면 전체 높이의 90%를 차지하도록 설정 */
+    display: flex;
+    text-align: center;
+    flex-direction: column;
+    align-items: center;
+}
+
+.main-text {
+    margin: 35px 0px 10px 0px;
+    font-size: 24px;
+}
+
+.create-posts-form {
+    text-align: right;
+}
+
+/* 게시글 설정 */
+.posts-list-container {
+    width: 600px;
+    margin: 10px auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 13px;
+}
+
+.posts-box {
+    border-radius: 16px;
+    width: 592px;
+    height: 135px;
+    padding: 17px 0px;
+    background-color: #fff;
+    box-shadow: 3px 4px 4px 0px #CCCCCC40;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
+}
+
+.posts-container {
+    width: 544px;
+    height: 59px;
+    padding: 5px 0px 20px 0px;
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column;
+}
+
+.posts-title {
+    text-align: left;
+    padding-bottom: 15px;
+}
+
+.posts-details-container {
+    font-size: 14px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.owner-container {
+    padding-top: 8px;
+    width: 544px;
+    height: 52px;
+    gap: 24px;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    text-align: left;
+}
+
+.owner-container h3 {
+    font-size: 15px;
+}
+
+.owner-container img {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: 0.1px solid gray;
+}

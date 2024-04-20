@@ -1,0 +1,147 @@
+@import "reset.css";
+
+.edit-profile {
+    width: 392px;
+    height: 90vh; /* 화면 전체 높이의 90%를 차지하도록 설정 */
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+}
+
+.file-input-container {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    margin: 25px 0px;
+}
+
+.profile-image-container {
+    text-align: left;
+}
+
+/* 프로필 이미지 수정 */
+.circle {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    background-color: lightgray;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden; /* 이미지가 원을 넘어가지 않도록 설정 */
+    position: relative; /* 내부 요소의 위치를 조정하기 위해 부모 요소를 relative로 설정 */
+}
+
+.circle img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* 이미지를 원에 맞추어 자르기 */
+    filter: brightness(50%);
+}
+
+.profile-image-change-button {
+    position: absolute;
+    text-align: center;
+    top: 50%;
+    left: 50%;
+    width: 30px;
+    padding: 2px 7px;
+    transform: translate(-50%, -50%); /* 요소를 수평 및 수직으로 가운데 정렬 */
+    color: white;
+    font-size: 16px;
+    font-weight: 400;
+    border: 2px solid white;
+    border-radius: 10px;
+}
+
+/* 파일 입력(input) 숨기기 */
+input[type="file"] {
+    display: none;
+}
+
+
+.edit-nickname-button {
+    width: 100%;
+    height: 32px;
+    border-radius: 7px;
+    background-color: #ACA0EB;
+}
+
+.withdraw-container {
+    width: 100%;
+    background-color: transparent;
+    color: black;
+    font-size: 14px;
+    padding: 10px 0px;
+
+    #withdraw-modal {
+        cursor: pointer;
+    }
+}
+
+.edit-profile-button-container {
+    padding-top: 10px;
+}
+
+.edit-profile-button {
+    width: 80px;
+    border-radius: 20px;
+}
+
+
+/* 리팩토링 */
+.edit-profile-form {
+    width: 100%;
+    height: auto;
+    margin: 10px 0px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.edit-profile-form button:hover {
+    background-color: #7F6AEE;
+}
+
+.edit-profile-form .row {
+    min-height: 30px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.edit-profile-form .row input[type="text"], input[type="password"] {
+    width: 100%;
+    border: 1px solid black;
+    border-radius: 4px;
+    padding: 8px 12px;
+    box-sizing: border-box;
+    outline: none;
+}
+
+.edit-profile-form .row input[type="file"] {
+    cursor: pointer;
+    width: 0px;
+    height: 0px;
+}
+
+.edit-profile-form .row p {
+    text-align: left;
+    margin: 0;
+}
+
+.edit-profile-form .detail {
+    text-align: left;
+    display: block;
+    margin-bottom: 6px;
+    font-size: 15px;
+    font-weight: bold;
+}
+
+.helper {
+    font-size: 12px;
+    color: red;
+    margin: 3px 0px 0px 0px;
+}

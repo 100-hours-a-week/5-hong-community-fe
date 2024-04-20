@@ -1,0 +1,66 @@
+.edit-posts {
+    width: 600px;
+    display: flex;
+    text-align: center;
+    flex-direction: column;
+    align-items: center;
+}
+
+.edit-posts h2 {
+    margin: 30px;
+}
+
+/* 수정 form 설정 */
+.edit-posts-form {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.edit-posts-form h3 {
+    margin: 15px 15px 15px 30px;
+}
+
+.edit-posts-form input:focus {
+    outline: none /* input 박스 포커스 설정 */
+}
+
+.edit-posts-form textarea:focus {
+    outline: none;
+}
+
+.posts-title-edit {
+    margin: 20px;
+    padding: 10px;
+    width: 540px;
+    border: none;
+    background-color: transparent;
+}
+
+.posts-file-edit {
+    margin: 0px 0px 30px 30px;
+}
+
+.posts-contents-edit {
+    margin: 20px;
+    padding: 10px;
+    width: 540px;
+    height: 300px;
+    border: none;
+    background-color: transparent;
+}
+
+.posts-edit-button-container {
+    width: 100%;
+    align-items: center;
+}
+
+.posts-edit-button-container button {
+    border-radius: 0;
+    background-color: #7F6AEE;
+    width: 350px;
+}
+
+.form-row-helper {
+    margin: 25px;
+}

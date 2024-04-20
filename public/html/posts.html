@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" type="text/css" href="/css/header.css">
+  <link rel="stylesheet" type="text/css" href="/css/global.css">
+  <link rel="stylesheet" type="text/css" href="/css/posts.css">
+
+  <title>community-layout by hong.kim</title>
+</head>
+
+<body>
+<section class="wrap">
+  <!-- 헤더 -->
+  <header>
+    <div class="header-container">
+      <div class="header-nav-before" id="go-back"></div>
+
+      <div class="header-text">
+        <h1>아무 말 대잔치</h1>
+      </div>
+
+      <!-- TODO: 로그인 되어있으면 이미지가 보이나?-->
+      <div class="header-image">
+        <img src="https://avatars.githubusercontent.com/u/144337839?v=4" class="circle-image" width="36">
+        <div class="dropdown-content">
+          <a href="/update-profile">회원정보수정</a>
+          <a href="/update-password">비밀번호수정</a>
+          <a href="/">로그아웃</a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- 게시판 -->
+  <article class="main">
+    <div class="main-text">
+      <p>안녕하세요,</p>
+      <p>아무 말 대잔치 <span class="highlight">게시판</span> 입니다.</p>
+    </div>
+
+    <!-- TODO: action 변경-->
+    <form action="#" method="post" accept-charset="UTF-8" class="create-posts-form">
+      <button type="submit" id="create-posts-button">게시글 작성</button>
+    </form>
+
+    <!-- 게시글 리스트 -->
+    <div class="posts-list-container">
+
+      <!-- 게시글 TODO: 무한 스크롤 구현할거임 -->
+      <!-- main 게시글 한개 예시 -->
+      <!--      <div class="posts-box">-->
+      <!--        <div class="posts-container">-->
+      <!--          <div class="posts-title">-->
+      <!--            <h2>제목 1</h2>-->
+      <!--          </div>-->
+      <!--          <div class="posts-details-container">-->
+      <!--            <div class="posts-metadata">-->
+      <!--              좋아요 <span class="posts-likes">0</span>-->
+      <!--              댓글 <span class="posts-comments">0</span>-->
+      <!--              조회수 <span class="posts-hits">0</span>-->
+      <!--            </div>-->
+      <!--            <div class="posts-datetime">-->
+      <!--              2021-01-01 00:00:00-->
+      <!--            </div>-->
+      <!--          </div>-->
+      <!--        </div>-->
+
+      <!--        <hr class="horizontal-line">-->
+
+      <!--        <div class="owner-container">-->
+      <!--          <img src="https://avatars.githubusercontent.com/u/144337839?v=4" width="36">-->
+      <!--          <h3><span class="owner-name">더미 작성자1</span></h3>-->
+      <!--        </div>-->
+      <!--      </div>-->
+      <!-- END :: Loop -->
+    </div>
+  </article>
+</section>
+
+<script src="/js/posts/posts.js" type="module"></script>
+</body>
+
+</html>

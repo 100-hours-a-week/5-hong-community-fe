@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" type="text/css" href="/css/header.css">
+  <link rel="stylesheet" type="text/css" href="/css/global.css">
+  <link rel="stylesheet" type="text/css" href="/css/make-posts.css">
+
+  <title>community-layout by hong.kim</title>
+</head>
+
+<body>
+<section class="wrap">
+  <!-- 헤더 -->
+  <header>
+    <div class="header-container">
+      <div class="header-nav-before" id="go-back">&lt;</div>
+
+      <div class="header-text">
+        <h1>아무 말 대잔치</h1>
+      </div>
+
+      <!-- TODO: 로그인 되어있으면 이미지가 보이나?-->
+      <div class="header-image">
+        <img src="https://avatars.githubusercontent.com/u/144337839?v=4" class="circle-image" width="36">
+        <div class="dropdown-content">
+          <a href="/update-profile">회원정보수정</a>
+          <a href="/update-password">비밀번호수정</a>
+          <a href="/">로그아웃</a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <article class="make-posts">
+    <h2>게시글 작성</h2>
+
+    <form class="make-posts-form" method="post">
+      <h3>제목*</h3>
+
+      <hr class="horizontal-line">
+
+      <input type="text" id="title" name="title" class="posts-title-make" placeholder="제목을 입력해주세요. (최대 26글자)">
+
+      <hr class="horizontal-line">
+
+      <h3>내용*</h3>
+
+      <hr class="horizontal-line">
+
+      <textarea class="posts-contents-make" type="text" id="contents" name="contents"
+                placeholder="내용을 입력해주세요!"></textarea>
+
+      <hr class="horizontal-line">
+
+      <p><span class="form-row-helper" id="posts-helper"></span></p>
+      <h3>이미지</h3>
+      <input type="file" id="file" accept="image/*" class="posts-file-make">
+
+      <div class="posts-make-button-container">
+        <button type="submit" id="posts-make-button">완료</button>
+      </div>
+    </form>
+
+  </article>
+</section>
+
+<script src="/js/common/header.js" type="module"></script>
+<script src="/js/posts/posts-make.js" type="module"></script>
+
+</body>
+
+</html>

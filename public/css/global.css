@@ -1,0 +1,190 @@
+@import "reset.css";
+
+/* body 설정 */
+body {
+    /* width: 1920px; */
+    width: 100%;
+    text-align: center;
+    background-color: #F4F5F7;
+
+    &::-webkit-scrollbar { /* 스크롤바 숨기기 */
+        display: none;
+    }
+}
+
+/* 세션 설정 */
+section {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+h1 {
+    margin: 0;
+    font-size: 32px;
+}
+
+h2 {
+    margin: 0;
+    font-size: 24px;
+}
+
+h3 {
+    margin: 0;
+    font-size: 16px;
+}
+
+/* a 태그 설정 */
+a {
+    text-decoration: none;
+    color: black;
+    font-size: 14px;
+}
+
+textarea {
+    resize: none; /* 크기 조정 비허용 */
+}
+
+/* 버튼 설정 */
+button {
+    width: 138px;
+    height: 39px;
+    text-align: center;
+    border-radius: 20px;
+    background-color: #ACA0EB;
+    color: #fff;
+    cursor: pointer;
+}
+
+/* form 전역 설정 */
+form {
+    /* width: 392px; */
+    /* min-width: 392px; */
+    width: 100%;
+    height: auto;
+    margin: 10px 0px;
+}
+
+.form-row {
+    min-height: 75px;
+    align-items: center;
+}
+
+.form-row input[type="text"], input[type="password"] {
+    width: 100%;
+    border: 1px solid black;
+    border-radius: 4px;
+    padding: 8px 12px;
+    box-sizing: border-box; /* 요소의 크기를 패딩과 경계선을 포함하여 계산 */
+    outline: none;
+}
+
+/* circle 로 사용할거라서 아예 안보이게 했음 */
+.form-row input[type="file"] {
+    cursor: pointer;
+    width: 0px;
+    height: 0px;
+}
+
+.form-row p {
+    text-align: left;
+    margin: 0;
+}
+
+.form-row-detail {
+    text-align: left;
+    display: block; /* 레이블을 블록 요소로 설정하여 위에서 아래로 표시 */
+    margin-bottom: 6px;
+    font-size: 15px;
+    font-weight: bold;
+}
+
+.form-row-helper {
+    font-size: 12px;
+    color: red;
+    margin: 3px 0px 0px 0px;
+}
+
+form button:hover {
+    /*background-color: #7F6AEE;*/
+}
+
+/* 유틸리티? 들 */
+/*.circle {*/
+/*    font-weight: 10;*/
+/*    width: 149px;*/
+/*    height: 149px;*/
+/*    border-radius: 50%;*/
+/*    background-color: lightgray;*/
+/*    display: flex;*/
+/*    justify-content: center;*/
+/*    align-items: center;*/
+/*    font-size: 55px;*/
+/*    cursor: pointer;*/
+/*}*/
+
+.circle {
+    position: relative;
+    width: 149px;
+    height: 149px;
+    border-radius: 50%;
+    background-color: lightgray;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 55px;
+    font-weight: 10;
+    cursor: pointer;
+    overflow: hidden;
+}
+
+.circle img {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* 원형에 맞게 이미지 확대/축소 */
+}
+
+.highlight {
+    font-weight: bold;
+}
+
+/* 경계선 */
+hr.horizontal-line {
+    width: 100%;
+    margin: 0;
+    border: 1px solid #00000029;
+}
+
+/* 원형 이미지 */
+.circle-image {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: 1px solid #000;
+}
+
+/* 토스트 메시지 */
+#toast-message {
+    opacity: 0;
+    position: fixed;
+    bottom: -100px;
+    left: 50%;
+    transform: translate(-50%, 0);
+    padding: 10px 50px;
+    background: rgba(0, 0, 0, 0.7);
+    border-radius: 10px;
+    color: #fff;
+    box-shadow: 3px 4px 11px 0px #00000040;
+    transition: all 0.5s;
+}
+
+#toast-message.active {
+    opacity: 100%;
+    bottom: 50px;
+}
+
+.none {
+    visibility: hidden;
+}
