@@ -76,18 +76,46 @@ function checkEnableButton() {
   }
 }
 
-// TODO: 백엔드 구현 후 완료
-function updatePasswordButtonEvent(event) {
+async function updatePasswordButtonEvent(event) {
   event.preventDefault();
-
   console.log('submit 버튼 눌림');
 
   updatePasswordButton.disabled = true;
 
-  toastMessage.classList.add('active');
-  setTimeout(function() {
-    toastMessage.classList.remove('active');
-  }, 1000);
+  const password = passwordField.value;
+  // TODO: 일단 사용자 1번 기준으로함 (인증 인가 구현 완료 후 시작)
+  await putFetch('/api/v1/members/1/password', { password })
+    .then(() => {
+      showSuccessToastMessage();
+    }).catch((e) => {
+      console.log(`비밀번호 변경 실패 -> ${e}`);
+    });
+}
 
-  updatePasswordButton.disabled = false;
+function showSuccessToastMessage() {
+  return new Promise((resolve) => {
+    toastMessage.classList.add('active');  // 토스트 메시지 표시
+    setTimeout(() => {
+      toastMessage.classList.remove('active');
+      resolve(); // Promise 를 해결하여 비동기 작업 완료
+    }, 1000);
+  });
+}
+
+async function putFetch(url, data) {
+  const baseUrl = 'http://localhost:8000';
+  const requestUrl = baseUrl + url;
+
+  return fetch(requestUrl, {
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    method: 'PUT',
+    body: JSON.stringify(data),
+  }).then(response => {
+    if (response.ok) {
+      return;  // TODO: response json 없음 BE 에서 수정해야함
+    }
+    throw new Error();
+  });
 }
