@@ -1,16 +1,15 @@
-import { fetchDummyPosts } from '../common/utils.js';
-
 const postsListContainer = document.querySelector('.posts-list-container');
 const createPostsButton = document.getElementById('create-posts-button');
 
-window.addEventListener('scroll', infiniteScrollEvent);
 window.addEventListener('load', insertHTML);
+window.addEventListener('scroll', infiniteScrollEvent);
 createPostsButton.addEventListener('click', createPostsButtonClickEvent);
 
+// 게시글 목록 무한 스크롤
+let nowRequestPage = 1;  // 요청을 보낼 페이지 번호 (1부터)
+
 let isAlreadyFetch = false;
-let isEnd = false;
-let scrollCount = 1;
-let maxPerPosts = 5;
+let isEndPage = false;
 
 // 무한 스크롤
 function infiniteScrollEvent() {
@@ -21,13 +20,14 @@ function infiniteScrollEvent() {
     return;
   }
 
-  if (isEnd) {
+  if (isEndPage) {
     console.log('더이상 받을 데이터 없음. => 무한 스크롤 이벤트 제거');
     window.removeEventListener('scroll', infiniteScrollEvent);
     return;
   }
 
   if (window.innerHeight + window.scrollY >= document.body.offsetHeight + 10) {
+    isAlreadyFetch = true;
     setTimeout(() => {
       insertHTML();
     }, 500);
@@ -35,17 +35,17 @@ function infiniteScrollEvent() {
 }
 
 async function insertHTML() {
-  isAlreadyFetch = true;
-
-  const response = await fetchDummyPosts();
-  const posts = response.slice(maxPerPosts * (scrollCount - 1), maxPerPosts * scrollCount);
-
-  isAlreadyFetch = false;
-
-  if (posts.length === 0) {
-    isEnd = true;
-    return;
-  }
+  const posts = await getFetch(`/api/v1/posts?page=${nowRequestPage}`)
+    .then((jsonData) => {
+      if (!jsonData.hasNext) {
+        isEndPage = true;
+      }
+      nowRequestPage = jsonData.nextPage;
+      return jsonData.data;
+    }).catch((e) => {
+      console.log(e);
+    });
+  console.log(posts);
 
   posts.forEach(post => {
     const postElement = document.createElement('div');
@@ -54,17 +54,17 @@ async function insertHTML() {
     postsListContainer.appendChild(postElement);
   });
 
-  scrollCount++;
+  isAlreadyFetch = false;
 }
 
 function generated(post) {
-  const postsId = post.post_id;
+  const postsId = post.postsId;
   const title = titleFormater(post.title);
-  const likeCount = numberFormater(post.like_count);
-  const commentCount = numberFormater(post.comments_count);
-  const hitsCount = numberFormater(post.hits_count);
-  const createdDate = post.created_at;
-  const postOwnerProfileImage = post.owner.profile_image;
+  const likeCount = numberFormater(post.likesCount);
+  const commentCount = numberFormater(post.commentsCount);
+  const hitsCount = numberFormater(post.hitsCount);
+  const createdDate = post.createdAt;
+  const postOwnerProfileImage = post.owner.profileImage;
   const postOwnerNickname = post.owner.nickname;
 
   return `
@@ -114,4 +114,21 @@ function numberFormater(num) {
     return (num / 1_000).toFixed(0) + 'k';
 
   return num.toString();
+}
+
+async function getFetch(url) {
+  const baseUrl = 'http://localhost:8000';
+  const requestUrl = baseUrl + url;
+
+  return fetch(requestUrl, {
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    method: 'GET',
+  }).then(response => {
+    if (response.ok) {
+      return response.json();
+    }
+    throw new Error();
+  });
 }
