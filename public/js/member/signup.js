@@ -1,5 +1,4 @@
 import { EMAIL_REGEX, NICKNAME_REGEX, PASSWORD_REGEX } from '../common/validate.js';
-import { fetchDummyMember } from '../common/utils.js';
 
 const profileField = document.getElementById('profile');
 const emailField = document.getElementById('email');
@@ -71,7 +70,7 @@ async function emailFieldInputEvent() {
     helperMessage = '*이메일을 입력해주세요.';
   } else if (!EMAIL_REGEX.test(value)) {
     helperMessage = '*올바른 이메일 주소 형식을 입력해주세요. (예:example@example.com)';
-  } else if (await isExistEmail(value)) {
+  } else if (await isDuplicateEmail(value)) {
     helperMessage = '*중복된 이메일 입니다.';
   } else {
     fieldValidContext.email = true;
@@ -81,14 +80,24 @@ async function emailFieldInputEvent() {
   checkEnableButton();
 }
 
-async function isExistEmail(email) {
+async function isDuplicateEmail(email) {
   console.log('fetch API :: request (nickname)');
-  const members = await fetchDummyMember();
 
-  let findMember = members.find((member) =>
-    member.email === email,
-  );
-  return findMember !== undefined;
+  // const members = await fetchDummyMember();
+  //
+  // let findMember = members.find((member) =>
+  //   member.email === email,
+  // );
+  // return findMember !== undefined;
+
+  return postFetch('/api/v1/members/email', { email })
+    .then(() => {
+      return false;
+    })
+    .catch((e) => {  // TODO: 예외 처리 세분화
+      console.log(e);
+      return true;
+    });
 }
 
 // 비밀번호
@@ -150,7 +159,7 @@ async function nicknameFieldInputEvent() {
     helperMessage = '*띄어쓰기를 없애주세요';
   } else if (value.length > 10) {
     helperMessage = '*닉네임은 최대 10자까지 작성 가능합니다.';
-  } else if (await isExistNickname(value)) {
+  } else if (await isDuplicateNickname(value)) {
     helperMessage = '*중복된 닉네임 입니다.';
   } else {
     fieldValidContext.nickname = true;
@@ -160,18 +169,28 @@ async function nicknameFieldInputEvent() {
   checkEnableButton();
 }
 
-async function isExistNickname(nickname) {
+async function isDuplicateNickname(nickname) {
   console.log('fetch API :: request (nickname)');
-  const members = await fetchDummyMember();
+  // const members = await fetchDummyMember();
+  //
+  // let findMember = members.find((member) =>
+  //   member.nickname === nickname,
+  // );
+  // return findMember !== undefined;
 
-  let findMember = members.find((member) =>
-    member.nickname === nickname,
-  );
-  return findMember !== undefined;
+  return postFetch('/api/v1/members/nickname', { nickname })
+    .then(() => {
+      return false;
+    })
+    .catch((e) => {
+      // TODO: 예외 처리 세분화
+      console.log(e);
+      return true;
+    });
 }
 
 // 버튼을 누를 수 있나? (모든 유효성 검사 통과?)
-function checkEnableButton() {
+async function checkEnableButton() {
   const isAllValid = Object.values(fieldValidContext).every(valid => valid === true);
   if (isAllValid) {
     signupButton.disabled = false;
@@ -182,9 +201,39 @@ function checkEnableButton() {
   }
 }
 
-// TODO: 백엔드 구현 후 완료
-function signupButtonClickEvent(event) {
+async function signupButtonClickEvent(event) {
   event.preventDefault();
 
-  location.href = '/';
+  // location.href = '/';
+
+  const email = emailField.value;
+  const password = passwordField.value;
+  const nickname = nicknameField.value;
+
+  await postFetch('/api/v1/members/signup', { email, password, nickname })
+    .then(() => {
+      // 회원가입 성공
+      location.href = '/';
+    })
+    .catch((e) => {  // TODO: 예외 처리 세분화
+      console.log(`회원가입 중 오류 발생 = ${e}`);
+    });
+}
+
+async function postFetch(url, data) {
+  const baseUrl = 'http://localhost:8000';
+  const requestUrl = baseUrl + url;
+
+  return fetch(requestUrl, {
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    method: 'POST',
+    body: JSON.stringify(data),
+  }).then(response => {
+    if (response.ok) {
+      return response.json();
+    }
+    throw new Error();
+  });
 }
