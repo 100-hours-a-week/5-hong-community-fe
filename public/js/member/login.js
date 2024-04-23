@@ -1,10 +1,12 @@
 import { EMAIL_REGEX, PASSWORD_REGEX } from '../common/validate.js';
-import { fetchDummyMember } from '../common/utils.js';
+
+// TODO: 로그인 페이지에서 helper 는 한개로 변경
 
 const emailField = document.getElementById('email');
 const passwordField = document.getElementById('password');
-const emailHelper = document.getElementById('email-helper');
-const passwordHelper = document.getElementById('password-helper');
+// const emailHelper = document.getElementById('email-helper');
+// const passwordHelper = document.getElementById('password-helper');
+const textHelper = document.getElementById('helper');
 const loginButton = document.getElementById('login-button');
 
 emailField.addEventListener('input', emailFieldInputEvent);
@@ -36,7 +38,8 @@ function emailFieldInputEvent(event) {
   } else {
     fieldValidContext.email = true;
   }
-  emailHelper.textContent = helperMessage;
+  // emailHelper.textContent = helperMessage;
+  textHelper.textContent = helperMessage;
 
   checkEnableButton();
 }
@@ -57,7 +60,7 @@ function passwordFieldInputEvent(event) {
   } else {
     fieldValidContext.password = true;
   }
-  passwordHelper.textContent = helperMessage;
+  textHelper.textContent = helperMessage;
 
   checkEnableButton();
 }
@@ -73,6 +76,7 @@ function checkEnableButton() {
   }
 }
 
+// TODO: 백엔드 구현후 완료
 // 로그인 버튼 눌렀을 때
 async function loginButtonClickEvent(event) {
   event.preventDefault();
@@ -80,15 +84,31 @@ async function loginButtonClickEvent(event) {
   const email = emailField.value;
   const password = passwordField.value;
 
-  const members = await fetchDummyMember();
-  const findMember = members.find((user) =>
-    user.email === email && user.password === password,
-  );
+  await postFetch('/api/v1/members/login', { email, password })
+    .then(() => {
+      // 로그인 성공
+      window.location.href = '/main';
+    })
+    .catch((e) => {
+      textHelper.textContent = '이메일 또는 비밀번호가 틀렸습니다.';
+      console.log(e);
+    });
+}
 
-  if (!findMember) {
-    return alert('아이디 또는 비밀번호가 잘못되었습니다.');
-  }
+async function postFetch(url, data) {
+  const baseUrl = 'http://localhost:8000';
+  const requestUrl = baseUrl + url;
 
-  // TODO: 백엔드 구현후 완료
-  window.location.href = '/main';
+  return fetch(requestUrl, {
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    method: 'POST',
+    body: JSON.stringify(data),
+  }).then(response => {
+    if (response.ok) {
+      return response.json();
+    }
+    throw new Error();
+  });
 }
