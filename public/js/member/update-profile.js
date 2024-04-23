@@ -1,5 +1,4 @@
 import { NICKNAME_REGEX } from '../common/validate.js';
-import { fetchDummyMember } from '../common/utils.js';
 
 const profileField = document.getElementById('profile');
 const nicknameField = document.getElementById('nickname');
@@ -58,7 +57,7 @@ async function nicknameFieldInputEvent() {
     helperMessage = '*띄어쓰기를 없애주세요';
   } else if (value.length > 10) {
     helperMessage = '*닉네임은 최대 10자까지 작성 가능합니다.';
-  } else if (await isExistNickname(value)) {
+  } else if (await isDuplicateNickname(value)) {
     helperMessage = '*중복된 닉네임 입니다.';
   } else {
     updateNicknameButton.disabled = false;
@@ -66,31 +65,49 @@ async function nicknameFieldInputEvent() {
   nicknameHelper.textContent = helperMessage;
 }
 
-async function isExistNickname(nickname) {
+async function isDuplicateNickname(nickname) {
   console.log('fetch API :: request (nickname)');
-  const members = await fetchDummyMember();
 
-  let findMember = members.find((member) =>
-    member.nickname === nickname,
-  );
-  return findMember !== undefined;
+  return postFetch('/api/v1/members/nickname', { nickname })
+    .then(() => {
+      return false;
+    })
+    .catch((e) => {
+      // TODO: 예외 처리 세분화
+      console.log(e);
+      return true;
+    });
 }
 
 async function updateNicknameButtonClickEvent(event) {
   event.preventDefault();
 
+  console.log('닉네임 수정 버튼 누름');
   updateNicknameButton.disabled = true;
 
-  // 토스트 메시지
-  toastMessage.classList.add('active');
-  setTimeout(() => {
-    toastMessage.classList.remove('active');
-  }, 1000);
-
-  updateNicknameButton.disabled = false;
+  const nickname = nicknameField.value;
+  // TODO: 일단 사용자 1번 기준으로함 (인증 인가 구현 완료 후 시작)
+  await putFetch('/api/v1/members/1/nickname', { nickname })
+    .then(() => {  // 닉네임 수정 성공
+      showSuccessToastMessage();
+    }).catch((e) => {  // 닉네임 수정 실패
+      console.log(e);
+      updateNicknameButton.disabled = false;
+    });
 }
 
-// TODO: 백엔드 구현 후 진행
+// 수정 완료시 이벤트
+function showSuccessToastMessage() {
+  return new Promise((resolve) => {
+    toastMessage.classList.add('active');  // 토스트 메시지 표시
+    setTimeout(() => {
+      toastMessage.classList.remove('active');
+      resolve(); // Promise 를 해결하여 비동기 작업 완료
+    }, 1000);
+  });
+}
+
+// TODO: 이미지 업로드 구현 후 완료
 async function updateProfileButtonClickEvent(event) {
   event.preventDefault();
 
@@ -120,9 +137,69 @@ window.addEventListener('click', (event) => {
 });
 
 // TODO: 백엔드 회원 탈퇴 구현
-function withdrawButtonClickEvent() {
+async function withdrawButtonClickEvent() {
   console.log('회원탈퇴 버튼 누름');
 
+  await deleteFetch('/api/v1/members/1')  // TODO: 일단 id 1인 회원으로
+    .then(() => {
+      window.location.href = '/';  // 일단 로그인 페이지로 이동
+    }).catch((e) => {
+      console.log(`일치하는 회원이 없음 -> ${e}`);
+    });
+
   // 변경해야함 일단 로그인 페이지로 이동
-  window.location.href = '/';
+  // window.location.href = '/';
+}
+
+async function postFetch(url, data) {
+  const baseUrl = 'http://localhost:8000';
+  const requestUrl = baseUrl + url;
+
+  return fetch(requestUrl, {
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    method: 'POST',
+    body: JSON.stringify(data),
+  }).then(response => {
+    if (response.ok) {
+      return response.json();
+    }
+    throw new Error();
+  });
+}
+
+async function putFetch(url, data) {
+  const baseUrl = 'http://localhost:8000';
+  const requestUrl = baseUrl + url;
+
+  return fetch(requestUrl, {
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    method: 'PUT',
+    body: JSON.stringify(data),
+  }).then(response => {
+    if (response.ok) {
+      return;  // TODO: response json 없음 BE 에서 수정해야함
+    }
+    throw new Error();
+  });
+}
+
+async function deleteFetch(url) {
+  const baseUrl = 'http://localhost:8000';
+  const requestUrl = baseUrl + url;
+
+  return fetch(requestUrl, {
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    method: 'DELETE',
+  }).then(response => {
+    if (response.ok) {
+      return;  // TODO: response json 없음 BE 에서 수정해야함
+    }
+    throw new Error();
+  });
 }
