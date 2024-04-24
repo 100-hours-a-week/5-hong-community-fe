@@ -32,10 +32,38 @@ function inputFieldEvent() {
   }
 }
 
-// TODO: 백엔드 구현후 완료
-function createPostsButtonEvent(event) {
+// TODO: 이미지 업로드 구현
+async function createPostsButtonEvent(event) {
   event.preventDefault();
 
-  console.log('백엔드 구현 후 완료');
-  alert('백엔드 구현 후 완료');
+  const title = titleField.value;
+  const contents = contentsField.value;
+  // 이미지는 임시
+  const thumbnail = 'https://avatars.githubusercontent.com/u/144337839?v=4';
+
+  await postFetch('/api/v1/posts', { title, contents, thumbnail })
+    .then(() => {
+      window.alert('게시글 작성 완료');
+      location.href = '/main';
+    }).catch((e) => {
+      console.log(e);  // 서버 오류
+    });
+}
+
+async function postFetch(url, data) {
+  const baseUrl = 'http://localhost:8000';
+  const requestUrl = baseUrl + url;
+
+  return fetch(requestUrl, {
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    method: 'POST',
+    body: JSON.stringify(data),
+  }).then(response => {
+    if (response.ok) {
+      return response.json();
+    }
+    throw new Error();
+  });
 }
