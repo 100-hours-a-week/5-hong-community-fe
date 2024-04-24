@@ -1,5 +1,3 @@
-import { fetchDummyPosts } from '../common/utils.js';
-
 const postsOwnerDetailContainer = document.querySelector('.posts-detail');
 const postsBodyContainer = document.querySelector('.posts-body');
 const commentsListContainer = document.querySelector('.comments-list-container');
@@ -14,6 +12,15 @@ commentsButton.addEventListener('click', commentsButtonClickEvent);
 closeModalButton.addEventListener('click', closeModalButtonClickEvent);
 okModalButton.addEventListener('click', okModalButtonClickEvent);
 
+// 댓글 목록 무한 스크롤
+let nowRequestPage = 1;
+
+let isAlreadyFetch = false;
+let isEndPage = false;
+
+// Vanilla JS 에서 상태 저장은 어떻게?
+let nowSelectCommentsId;
+
 function getPostId() {
   const pathname = window.location.pathname;
   const StringTypePostId = pathname.split('/')[2];
@@ -21,22 +28,41 @@ function getPostId() {
 }
 
 async function insertHTML() {
-  const posts = await fetchDummyPosts();
-  const findPost = posts.find((post) => post.post_id === getPostId());
+  // const posts = await fetchDummyPosts();
+  // const findPost = posts.find((post) => post.post_id === getPostId());
+  const nowPostsId = getPostId();
 
-  postsOwnerDetailContainer.innerHTML = generatedPostsOwnerDetail(findPost);
-  postsBodyContainer.innerHTML = generatedPostsBody(findPost);
-  insertCommentList(findPost.comments);
+  const findPosts = await getFetch(`/api/v1/posts/${nowPostsId}`)
+    .catch((e) => {
+      console.log(e);
+    });
+  postsOwnerDetailContainer.innerHTML = generatedPostsOwnerDetail(findPosts);
+  postsBodyContainer.innerHTML = generatedPostsBody(findPosts);
+
+
+  const findComments = await getFetch(`/api/v1/comments?page=${nowRequestPage}&postsId=${nowPostsId}`)
+    .then((jsonData) => {
+      if (!jsonData.hasNext) {
+        isEndPage = true;
+      }
+      nowRequestPage = jsonData.nextPage;
+      return jsonData.data;
+    }).catch((e) => {
+      console.log(e);
+    });
+  console.log(findComments);
+  insertCommentList(findComments);
+
   setPostsEvent();
   setCommentsEvent();
 }
 
 function generatedPostsOwnerDetail(posts) {
-  const postsId = posts.post_id;
+  const postsId = posts.postsId;
   const title = posts.title;
-  const ownerProfileImage = posts.post_image;
+  const ownerProfileImage = posts.thumbnail;
   const ownerNickname = posts.owner.nickname;
-  const postsDate = posts.created_at;
+  const postsDate = posts.createdAt;
 
   return `
     <div class="posts-detail-title"><h1>${title}</h1></div>
@@ -57,10 +83,10 @@ function generatedPostsOwnerDetail(posts) {
 }
 
 function generatedPostsBody(posts) {
-  const thumbnail = posts.post_image;
+  const thumbnail = posts.thumbnail;
   const contents = posts.contents;
-  const hitsCount = numberFormater(posts.hits_count);
-  const commentsCount = numberFormater(posts.comments_count);
+  const hitsCount = numberFormater(posts.hitsCount);
+  const commentsCount = numberFormater(posts.commentsCount);
 
   return `
     <div class="posts-thumbnail">
@@ -75,7 +101,7 @@ function generatedPostsBody(posts) {
         <span class="metadata-label">조회수</span>
       </div>
       <div class="metadata-box">
-        <span class="metadata-value">${commentsCount}</span>
+        <span class="metadata-value" id="comments-count">${commentsCount}</span>
         <span class="metadata-label">댓글</span>
       </div>
     </div>
@@ -93,11 +119,11 @@ function insertCommentList(comments) {
 }
 
 function generatedComment(comment) {
-  const commentId = comment.comments_id;
-  const contents = comment.content;
-  const commentsDate = comment.created_at;
+  const commentId = comment.commentsId;
+  const contents = comment.contents;
+  const commentsDate = comment.createdAt;
   const ownerNickname = comment.owner.nickname;
-  const ownerProfile = comment.owner.profile_image;
+  const ownerProfile = comment.owner.profileImage;
 
   return `
     <div class="comments-owner-info">
@@ -128,9 +154,9 @@ function checkEnableButton() {
   return true;
 }
 
-// TODO: 백엔드 구현시 변경해야함.
+// TODO: 댓글 수정 과 생성은 어떻게 구분할지 생각
 // 댓글 등록 or 수정 버튼
-function commentsButtonClickEvent(event) {
+async function commentsButtonClickEvent(event) {
   event.preventDefault();
 
   if (!checkEnableButton()) {
@@ -138,12 +164,82 @@ function commentsButtonClickEvent(event) {
     return;
   }
 
+  // TODO: 리팩토링 (로직 분리)
   const contents = commentsContent.value;
-  console.log(`백엔드 구현시 변경해야함.\n내용 : ${contents}`);
+
+  if (commentsButton.textContent === '댓글 수정') {  // 이렇게 텍스트로 하는게 맞나..?
+    // 댓글 수정
+    console.log('댓글 수정하기 버튼 누름');
+
+    await putFetch(`/api/v1/comments/${nowSelectCommentsId}`, { contents })
+      .then(() => {
+        updateComment(contents);
+      }).catch((e) => {
+        console.log(e);
+      });
+  } else {
+    // 댓글 생성
+    console.log('새로운 댓글 생성하기 버튼 누름');
+    const postsId = getPostId();
+
+    await postFetch('/api/v1/comments', { contents, postsId })
+      .then((jsonData) => {
+        createNewComments(jsonData);  // 댓글 목록의 최상단에 새 댓글을 밀어 넣음
+      }).catch((e) => {
+        console.log(e);
+      });
+  }
+
+  // 완료 후 작성한 댓글(현재 입력한 text) 삭제 & "댓글 등록" 으로 변경 (수정할 경우 때문에 : 리팩토링)
+  const commentsInputBox = document.querySelector('.comments-input-box');
+  commentsInputBox.value = '';
+  commentsButton.textContent = '댓글 등록';
+  commentsButton.disabled = true;
+  commentsButton.style.backgroundColor = '#ACA0EB';
+}
+
+// 댓글 목록에서 변경될 경우 (수정 버튼을 통해 변경될 경우)
+function updateComment(contents) {
+  // 현재 보여지는 댓글 목록에서 수정
+  const element = document.querySelector(`[data-comment-id="${nowSelectCommentsId}"]`);
+  const parentElement = element.parentNode.parentNode.parentNode;
+  const beforeContents = parentElement.querySelector('.comments-contents');
+  beforeContents.textContent = contents;
+}
+
+// 댓글 목록의 최상단에 새 댓글을 밀어 넣음
+function createNewComments(data) {
+  const element = document.createElement('div');
+  element.classList.add('comments-info');
+
+  element.innerHTML = generatedComment(data);
+  commentsListContainer.prepend(element);
+
+  // 게시글의 댓글 수 + 1
+  const commentsCount = document.getElementById('comments-count');
+  const nowPostsHasCommentsNum = parseInt(commentsCount.textContent);
+  commentsCount.textContent = String(nowPostsHasCommentsNum + 1);
+
+  // TODO: 이벤트 등록 리팩토링
+  // 수정 이벤트 등록
+  const editButton = document.getElementsByClassName('edit-button comments')[0];
+  editButton.addEventListener('click', (event) => {
+    editComment(event.target);
+  });
+
+  // 삭제 이벤트 등록
+  const deleteButton = document.getElementsByClassName('delete-button comments')[0];
+  deleteButton.addEventListener('click', (event) => {
+    showModal('댓글을 삭제하시겠습니까?', '삭제한 내용은 복구할 수 없습니다.');
+  });
 }
 
 // 댓글 수정 버튼 눌렀을 때
 function editComment(element) {
+  // 수정하기 버튼 선택시 댓글 id 정보를 저장
+  nowSelectCommentsId = element.getAttribute('data-comment-id');
+  console.log(`현재 선택한 댓글 id => ${nowSelectCommentsId}`);
+
   const parentElement = element.parentNode.parentNode.parentNode;
   const contentElement = parentElement.querySelector('.comments-contents');
   const content = contentElement.textContent;
@@ -229,4 +325,57 @@ function numberFormater(num) {
     return (num / 1_000).toFixed(0) + 'k';
 
   return num.toString();
+}
+
+async function getFetch(url) {
+  const baseUrl = 'http://localhost:8000';
+  const requestUrl = baseUrl + url;
+
+  return fetch(requestUrl, {
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    method: 'GET',
+  }).then(response => {
+    if (response.ok) {
+      return response.json();
+    }
+    throw new Error();
+  });
+}
+
+async function putFetch(url, data) {
+  const baseUrl = 'http://localhost:8000';
+  const requestUrl = baseUrl + url;
+
+  return fetch(requestUrl, {
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    method: 'PUT',
+    body: JSON.stringify(data),
+  }).then(response => {
+    if (response.ok) {
+      return;  // TODO: response json 없음 BE 에서 수정해야함
+    }
+    throw new Error();
+  });
+}
+
+async function postFetch(url, data) {
+  const baseUrl = 'http://localhost:8000';
+  const requestUrl = baseUrl + url;
+
+  return fetch(requestUrl, {
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    method: 'POST',
+    body: JSON.stringify(data),
+  }).then(response => {
+    if (response.ok) {
+      return response.json();
+    }
+    throw new Error();
+  });
 }
