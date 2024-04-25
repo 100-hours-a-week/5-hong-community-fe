@@ -1,4 +1,5 @@
 import { PASSWORD_REGEX } from '../common/validate.js';
+import { putFetch } from '../common/utils.js';
 
 const passwordField = document.getElementById('password');
 const passwordConfirmField = document.getElementById('password-confirm');
@@ -99,23 +100,5 @@ function showSuccessToastMessage() {
       toastMessage.classList.remove('active');
       resolve(); // Promise 를 해결하여 비동기 작업 완료
     }, 1000);
-  });
-}
-
-async function putFetch(url, data) {
-  const baseUrl = 'http://localhost:8000';
-  const requestUrl = baseUrl + url;
-
-  return fetch(requestUrl, {
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    method: 'PUT',
-    body: JSON.stringify(data),
-  }).then(response => {
-    if (response.ok) {
-      return;  // TODO: response json 없음 BE 에서 수정해야함
-    }
-    throw new Error();
   });
 }

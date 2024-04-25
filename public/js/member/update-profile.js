@@ -1,4 +1,5 @@
 import { NICKNAME_REGEX } from '../common/validate.js';
+import { deleteFetch, postFetch, putFetch } from '../common/utils.js';
 
 const profileField = document.getElementById('profile');
 const nicknameField = document.getElementById('nickname');
@@ -149,57 +150,4 @@ async function withdrawButtonClickEvent() {
 
   // 변경해야함 일단 로그인 페이지로 이동
   // window.location.href = '/';
-}
-
-async function postFetch(url, data) {
-  const baseUrl = 'http://localhost:8000';
-  const requestUrl = baseUrl + url;
-
-  return fetch(requestUrl, {
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    method: 'POST',
-    body: JSON.stringify(data),
-  }).then(response => {
-    if (response.ok) {
-      return response.json();
-    }
-    throw new Error();
-  });
-}
-
-async function putFetch(url, data) {
-  const baseUrl = 'http://localhost:8000';
-  const requestUrl = baseUrl + url;
-
-  return fetch(requestUrl, {
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    method: 'PUT',
-    body: JSON.stringify(data),
-  }).then(response => {
-    if (response.ok) {
-      return;  // TODO: response json 없음 BE 에서 수정해야함
-    }
-    throw new Error();
-  });
-}
-
-async function deleteFetch(url) {
-  const baseUrl = 'http://localhost:8000';
-  const requestUrl = baseUrl + url;
-
-  return fetch(requestUrl, {
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    method: 'DELETE',
-  }).then(response => {
-    if (response.ok) {
-      return;  // TODO: response json 없음 BE 에서 수정해야함
-    }
-    throw new Error();
-  });
 }

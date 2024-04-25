@@ -1,3 +1,5 @@
+import { getFetch, putFetch } from '../common/utils.js';
+
 const titleField = document.getElementById('title');
 const contentsField = document.getElementById('contents');
 const helperText = document.getElementById('posts-helper');
@@ -66,43 +68,8 @@ async function postsEditButtonEvent(event) {
   await putFetch(`/api/v1/posts/${nowPostsId}`, { title, contents })
     .then(() => {
       alert('게시글 수정 완료');
-      window.history.back();
+      location.href = `/posts/${nowPostsId}`;
     }).catch((e) => {
       console.log(e);  // 서버 오류남
     });
-}
-
-async function getFetch(url) {
-  const baseUrl = 'http://localhost:8000';
-  const requestUrl = baseUrl + url;
-
-  return fetch(requestUrl, {
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    method: 'GET',
-  }).then(response => {
-    if (response.ok) {
-      return response.json();
-    }
-    throw new Error();
-  });
-}
-
-async function putFetch(url, data) {
-  const baseUrl = 'http://localhost:8000';
-  const requestUrl = baseUrl + url;
-
-  return fetch(requestUrl, {
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    method: 'PUT',
-    body: JSON.stringify(data),
-  }).then(response => {
-    if (response.ok) {
-      return;  // TODO: response json 없음 BE 에서 수정해야함
-    }
-    throw new Error();
-  });
 }

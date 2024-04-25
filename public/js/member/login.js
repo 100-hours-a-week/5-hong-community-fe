@@ -1,4 +1,5 @@
 import { EMAIL_REGEX, PASSWORD_REGEX } from '../common/validate.js';
+import { postFetch } from '../common/utils.js';
 
 // TODO: 로그인 페이지에서 helper 는 한개로 변경
 
@@ -93,22 +94,4 @@ async function loginButtonClickEvent(event) {
       textHelper.textContent = '이메일 또는 비밀번호가 틀렸습니다.';
       console.log(e);
     });
-}
-
-async function postFetch(url, data) {
-  const baseUrl = 'http://localhost:8000';
-  const requestUrl = baseUrl + url;
-
-  return fetch(requestUrl, {
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    method: 'POST',
-    body: JSON.stringify(data),
-  }).then(response => {
-    if (response.ok) {
-      return response.json();
-    }
-    throw new Error();
-  });
 }

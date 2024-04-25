@@ -1,3 +1,5 @@
+import { getFetch } from '../common/utils.js';
+
 const postsListContainer = document.querySelector('.posts-list-container');
 const createPostsButton = document.getElementById('create-posts-button');
 
@@ -26,7 +28,7 @@ function infiniteScrollEvent() {
     return;
   }
 
-  if (window.innerHeight + window.scrollY >= document.body.offsetHeight + 10) {
+  if (window.innerHeight + window.scrollY >= document.body.offsetHeight) {
     isAlreadyFetch = true;
     setTimeout(() => {
       insertHTML();
@@ -114,21 +116,4 @@ function numberFormater(num) {
     return (num / 1_000).toFixed(0) + 'k';
 
   return num.toString();
-}
-
-async function getFetch(url) {
-  const baseUrl = 'http://localhost:8000';
-  const requestUrl = baseUrl + url;
-
-  return fetch(requestUrl, {
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    method: 'GET',
-  }).then(response => {
-    if (response.ok) {
-      return response.json();
-    }
-    throw new Error();
-  });
 }

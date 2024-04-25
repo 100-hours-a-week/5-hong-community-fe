@@ -1,4 +1,5 @@
 import { EMAIL_REGEX, NICKNAME_REGEX, PASSWORD_REGEX } from '../common/validate.js';
+import { postFetch } from '../common/utils.js';
 
 const profileField = document.getElementById('profile');
 const emailField = document.getElementById('email');
@@ -218,22 +219,4 @@ async function signupButtonClickEvent(event) {
     .catch((e) => {  // TODO: 예외 처리 세분화
       console.log(`회원가입 중 오류 발생 = ${e}`);
     });
-}
-
-async function postFetch(url, data) {
-  const baseUrl = 'http://localhost:8000';
-  const requestUrl = baseUrl + url;
-
-  return fetch(requestUrl, {
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    method: 'POST',
-    body: JSON.stringify(data),
-  }).then(response => {
-    if (response.ok) {
-      return response.json();
-    }
-    throw new Error();
-  });
 }

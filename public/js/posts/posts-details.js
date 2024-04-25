@@ -1,4 +1,5 @@
 // TODO: 리팩토링......
+import { deleteFetch, getFetch, postFetch, putFetch } from '../common/utils.js';
 
 const postsOwnerDetailContainer = document.querySelector('.posts-detail');
 const postsBodyContainer = document.querySelector('.posts-body');
@@ -403,74 +404,4 @@ function numberFormater(num) {
     return (num / 1_000).toFixed(0) + 'k';
 
   return num.toString();
-}
-
-async function getFetch(url) {
-  const baseUrl = 'http://localhost:8000';
-  const requestUrl = baseUrl + url;
-
-  return fetch(requestUrl, {
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    method: 'GET',
-  }).then(response => {
-    if (response.ok) {
-      return response.json();
-    }
-    throw new Error();
-  });
-}
-
-async function putFetch(url, data) {
-  const baseUrl = 'http://localhost:8000';
-  const requestUrl = baseUrl + url;
-
-  return fetch(requestUrl, {
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    method: 'PUT',
-    body: JSON.stringify(data),
-  }).then(response => {
-    if (response.ok) {
-      return;  // TODO: response json 없음 BE 에서 수정해야함
-    }
-    throw new Error();
-  });
-}
-
-async function postFetch(url, data) {
-  const baseUrl = 'http://localhost:8000';
-  const requestUrl = baseUrl + url;
-
-  return fetch(requestUrl, {
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    method: 'POST',
-    body: JSON.stringify(data),
-  }).then(response => {
-    if (response.ok) {
-      return response.json();
-    }
-    throw new Error();
-  });
-}
-
-async function deleteFetch(url) {
-  const baseUrl = 'http://localhost:8000';
-  const requestUrl = baseUrl + url;
-
-  return fetch(requestUrl, {
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    method: 'DELETE',
-  }).then(response => {
-    if (response.ok) {
-      return;
-    }
-    throw new Error();
-  });
 }

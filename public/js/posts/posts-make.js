@@ -1,3 +1,5 @@
+import { postFetch } from '../common/utils.js';
+
 const titleField = document.getElementById('title');
 const contentsField = document.getElementById('contents');
 const helperText = document.getElementById('posts-helper');
@@ -48,22 +50,4 @@ async function createPostsButtonEvent(event) {
     }).catch((e) => {
       console.log(e);  // 서버 오류
     });
-}
-
-async function postFetch(url, data) {
-  const baseUrl = 'http://localhost:8000';
-  const requestUrl = baseUrl + url;
-
-  return fetch(requestUrl, {
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    method: 'POST',
-    body: JSON.stringify(data),
-  }).then(response => {
-    if (response.ok) {
-      return response.json();
-    }
-    throw new Error();
-  });
 }
