@@ -7,6 +7,7 @@ const commentsContent = document.getElementById('comments');
 const commentsButton = document.getElementById('comments-button');
 
 window.addEventListener('load', insertHTML);
+window.addEventListener('scroll', infiniteScrollEvent);
 commentsContent.addEventListener('input', checkEnableButton);
 commentsButton.addEventListener('click', commentsButtonClickEvent);
 
@@ -26,8 +27,6 @@ function getPostId() {
 }
 
 async function insertHTML() {
-  // const posts = await fetchDummyPosts();
-  // const findPost = posts.find((post) => post.post_id === getPostId());
   const nowPostsId = getPostId();
 
   const findPosts = await getFetch(`/api/v1/posts/${nowPostsId}`)
@@ -37,8 +36,39 @@ async function insertHTML() {
   postsOwnerDetailContainer.innerHTML = generatedPostsOwnerDetail(findPosts);
   postsBodyContainer.innerHTML = generatedPostsBody(findPosts);
 
+  setPostsEvent();
 
-  const findComments = await getFetch(`/api/v1/comments?page=${nowRequestPage}&postsId=${nowPostsId}`)
+  await insertCommentsList();
+}
+
+function infiniteScrollEvent() {
+  console.log('스크롤 이벤트 발생');
+
+  if (isAlreadyFetch) {
+    console.log('이미 fetch request 전송함');
+    return;
+  }
+
+  if (isEndPage) {
+    console.log('더이상 받을 데이터 없음. => 무한 스크롤 이벤트 제거');
+    window.removeEventListener('scroll', infiniteScrollEvent);
+    return;
+  }
+
+  if (window.innerHeight + window.scrollY >= document.body.offsetHeight) {
+    console.log('fetch 요청 보냄');
+    isAlreadyFetch = true;
+    setTimeout(() => {
+      insertCommentsList();
+    }, 500);
+  }
+}
+
+async function insertCommentsList() {
+  const nowPostsId = getPostId();
+  const requestUrl = `/api/v1/comments?page=${nowRequestPage}&postsId=${nowPostsId}`;
+
+  const findComments = await getFetch(requestUrl)
     .then((jsonData) => {
       if (!jsonData.hasNext) {
         isEndPage = true;
@@ -53,8 +83,8 @@ async function insertHTML() {
     insertCommentList(findComments);
   }
 
-  setPostsEvent();
   setCommentsEvent();
+  isAlreadyFetch = false;  // fetch 요청 완료
 }
 
 function generatedPostsOwnerDetail(posts) {
