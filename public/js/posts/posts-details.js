@@ -1,16 +1,14 @@
+// TODO: 리팩토링......
+
 const postsOwnerDetailContainer = document.querySelector('.posts-detail');
 const postsBodyContainer = document.querySelector('.posts-body');
 const commentsListContainer = document.querySelector('.comments-list-container');
 const commentsContent = document.getElementById('comments');
 const commentsButton = document.getElementById('comments-button');
-const closeModalButton = document.getElementById('modal-close');
-const okModalButton = document.getElementById('modal-ok');
 
 window.addEventListener('load', insertHTML);
 commentsContent.addEventListener('input', checkEnableButton);
 commentsButton.addEventListener('click', commentsButtonClickEvent);
-closeModalButton.addEventListener('click', closeModalButtonClickEvent);
-okModalButton.addEventListener('click', okModalButtonClickEvent);
 
 // 댓글 목록 무한 스크롤
 let nowRequestPage = 1;
@@ -50,8 +48,10 @@ async function insertHTML() {
     }).catch((e) => {
       console.log(e);
     });
-  console.log(findComments);
-  insertCommentList(findComments);
+
+  if (findComments) {  // 해당 게시글에 등록된 댓글이 있는 경우
+    insertCommentList(findComments);
+  }
 
   setPostsEvent();
   setCommentsEvent();
@@ -230,7 +230,7 @@ function createNewComments(data) {
   // 삭제 이벤트 등록
   const deleteButton = document.getElementsByClassName('delete-button comments')[0];
   deleteButton.addEventListener('click', (event) => {
-    showModal('댓글을 삭제하시겠습니까?', '삭제한 내용은 복구할 수 없습니다.');
+    showCommentsModal(event.target);
   });
 }
 
@@ -262,7 +262,7 @@ function setPostsEvent() {
   });
 
   deleteButton.addEventListener('click', () => {
-    showModal('게시글을 삭제하시겠습니까?', '삭제한 내용은 복구할 수 없습니다.');
+    showPostsModal();
   });
 }
 
@@ -280,41 +280,89 @@ function setCommentsEvent() {
 
   // 댓글 삭제 이벤트
   for (const deleteButton of deleteButtons) {
-    deleteButton.addEventListener('click', () => {
-      showModal('댓글을 삭제하시겠습니까?', '삭제한 내용은 복구할 수 없습니다.');
+    deleteButton.addEventListener('click', (event) => {
+      showCommentsModal(event.target);
     });
   }
 }
 
-// 삭제 버튼 클릭 시 모달 열기
-function showModal(title, warnMessage) {
-  const modal = document.querySelector('.modal');
-  const modalTitle = modal.querySelector('.modal-content-title');
-  const modalMessage = modal.querySelector('.modal-content-warn');
-
-  modalTitle.textContent = title;
-  modalMessage.textContent = warnMessage;
+function showPostsModal() {
+  const modal = document.getElementById('posts-modal');
   modal.style.display = 'block';
+
+  // 게시글 모달 이벤트 등록
+  const okButton = modal.querySelector('.ok');
+  okButton.addEventListener('click', deletePostsEvent);
+
+  const closeButton = modal.querySelector('.close');
+  closeButton.addEventListener('click', closeModalEvent);
 }
 
-// 모달 닫기 버튼
-function closeModalButtonClickEvent() {
-  const modal = document.querySelector('.modal');
+function showCommentsModal(element) {
+  // 현재 선택한 id 값 state 에 저장
+  nowSelectCommentsId = element.getAttribute('data-comment-id');
+  console.log(`현재 선택한 댓글 id => ${nowSelectCommentsId}`);
+
+  const modal = document.getElementById('comments-modal');
+  modal.style.display = 'block';
+
+  // 댓글 모달 이벤트 등록
+  const okButton = modal.querySelector('.ok');
+  okButton.addEventListener('click', deleteCommentsEvent);
+
+  const closeButton = modal.querySelector('.close');
+  closeButton.addEventListener('click', closeModalEvent);
+}
+
+// 게시글 모달 삭제 이벤트
+async function deletePostsEvent(event) {
+  const element = event.target;
+  const modal = element.parentNode.parentNode.parentNode;
   modal.style.display = 'none';
+
+  const postsId = getPostId();
+  await deleteFetch(`/api/v1/posts/${postsId}`)
+    .then(() => {
+      location.href = '/main';  // 메인으로 이동
+    }).catch((e) => {
+      console.log(e);
+    });
+
+  modal.removeEventListener('click', deletePostsEvent);
 }
 
-// 모달 확인 버튼
-function okModalButtonClickEvent() {
-  console.log('모달에서 확인 버튼 누름 이것도 변경해야함.');
+// 댓글 모달 삭제 이벤트
+async function deleteCommentsEvent(event) {
+  const element = event.target;
+  const modal = element.parentNode.parentNode.parentNode;
+  modal.style.display = 'none';
+
+  await deleteFetch(`/api/v1/comments/${nowSelectCommentsId}`)
+    .catch((e) => {
+      console.log(e);
+    });
+
+  // 게시글의 댓글 수 - 1
+  const commentsCount = document.getElementById('comments-count');
+  const nowPostsHasCommentsNum = parseInt(commentsCount.textContent);
+  commentsCount.textContent = String(nowPostsHasCommentsNum - 1);
+
+  // 현재 보여지는 댓글 요소를 삭제
+  const commentsElement = document.querySelector(`[data-comment-id="${nowSelectCommentsId}"]`);
+  const parentElement = commentsElement.parentNode.parentNode.parentNode;
+  parentElement.remove();
+
+  modal.removeEventListener('click', deleteCommentsEvent);
 }
 
-// 모달 외부 클릭 시 닫기
-window.addEventListener('click', (event) => {
-  const modal = document.querySelector('.modal');
-  if (event.target === modal) {
-    modal.style.display = 'none';
-  }
-});
+// 모달 닫기 이벤트
+function closeModalEvent(event) {
+  const element = event.target;
+  const modal = element.parentNode.parentNode.parentNode;
+  modal.style.display = 'none';
+
+  modal.removeEventListener('click', closeModalEvent);
+}
 
 // TODO: 중복될 코드 같다.
 function numberFormater(num) {
@@ -375,6 +423,23 @@ async function postFetch(url, data) {
   }).then(response => {
     if (response.ok) {
       return response.json();
+    }
+    throw new Error();
+  });
+}
+
+async function deleteFetch(url) {
+  const baseUrl = 'http://localhost:8000';
+  const requestUrl = baseUrl + url;
+
+  return fetch(requestUrl, {
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    method: 'DELETE',
+  }).then(response => {
+    if (response.ok) {
+      return;
     }
     throw new Error();
   });
