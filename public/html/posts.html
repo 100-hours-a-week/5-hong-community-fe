@@ -24,11 +24,15 @@
 
       <!-- TODO: 로그인 되어있으면 이미지가 보이나?-->
       <div class="header-image">
-        <img src="https://avatars.githubusercontent.com/u/144337839?v=4" class="circle-image" width="36">
+        <img src="" class="circle-image" width="36"
+             id="profile-image">
         <div class="dropdown-content">
-          <a href="/update-profile">회원정보수정</a>
-          <a href="/update-password">비밀번호수정</a>
-          <a href="/">로그아웃</a>
+          <!--          <a href="/update-profile">회원정보수정</a>-->
+          <!--          <a href="/update-password">비밀번호수정</a>-->
+          <!--          <a href="/">로그아웃</a>-->
+          <div class="dropdown-button" id="update-profile-button">회원정보수정</div>
+          <div class="dropdown-button" id="update-password-button">비밀번호수정</div>
+          <div class="dropdown-button" id="logout-button">로그아웃</div>
         </div>
       </div>
     </div>
@@ -80,6 +84,7 @@
   </article>
 </section>
 
+<script src="/js/common/header.js" type="module"></script>
 <script src="/js/posts/posts.js" type="module"></script>
 </body>
 
