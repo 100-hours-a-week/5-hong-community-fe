@@ -85,7 +85,7 @@ async function updatePasswordButtonEvent(event) {
 
   const password = passwordField.value;
   // TODO: 일단 사용자 1번 기준으로함 (인증 인가 구현 완료 후 시작)
-  await putFetch('/api/v1/members/1/password', { password })
+  await putFetch('/api/v1/members/password', { password })
     .then(() => {
       showSuccessToastMessage();
     }).catch((e) => {

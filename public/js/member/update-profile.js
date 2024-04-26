@@ -88,7 +88,7 @@ async function updateNicknameButtonClickEvent(event) {
 
   const nickname = nicknameField.value;
   // TODO: 일단 사용자 1번 기준으로함 (인증 인가 구현 완료 후 시작)
-  await putFetch('/api/v1/members/1/nickname', { nickname })
+  await putFetch('/api/v1/members/nickname', { nickname })
     .then(() => {  // 닉네임 수정 성공
       showSuccessToastMessage();
     }).catch((e) => {  // 닉네임 수정 실패
@@ -141,7 +141,7 @@ window.addEventListener('click', (event) => {
 async function withdrawButtonClickEvent() {
   console.log('회원탈퇴 버튼 누름');
 
-  await deleteFetch('/api/v1/members/1')  // TODO: 일단 id 1인 회원으로
+  await deleteFetch('/api/v1/members')  // TODO: 일단 id 1인 회원으로
     .then(() => {
       window.location.href = '/';  // 일단 로그인 페이지로 이동
     }).catch((e) => {
