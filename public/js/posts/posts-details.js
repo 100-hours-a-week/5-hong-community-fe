@@ -7,11 +7,6 @@ const commentsListContainer = document.querySelector('.comments-list-container')
 const commentsContent = document.getElementById('comments');
 const commentsButton = document.getElementById('comments-button');
 
-window.addEventListener('load', insertHTML);
-window.addEventListener('scroll', infiniteScrollEvent);
-commentsContent.addEventListener('input', checkEnableButton);
-commentsButton.addEventListener('click', commentsButtonClickEvent);
-
 // 댓글 목록 무한 스크롤
 let nowRequestPage = 1;
 
@@ -20,6 +15,24 @@ let isEndPage = false;
 
 // Vanilla JS 에서 상태 저장은 어떻게?
 let nowSelectCommentsId;
+
+// 현재 사용자 아이디
+let nowMemberId;
+
+// window.addEventListener('load', insertHTML);
+window.addEventListener('load', async () => {
+  await getFetch('/api/v1/members')
+    .then((jsonData) => {
+      nowMemberId = jsonData.memberId;
+      console.log(`현재 접속중인 사용자 id => ${nowMemberId}`);
+    })
+    .catch((e) => console.log(e));
+
+  await insertHTML();
+});
+window.addEventListener('scroll', infiniteScrollEvent);
+commentsContent.addEventListener('input', checkEnableButton);
+commentsButton.addEventListener('click', commentsButtonClickEvent);
 
 function getPostId() {
   const pathname = window.location.pathname;
@@ -78,6 +91,7 @@ async function insertCommentsList() {
       return jsonData.data;
     }).catch((e) => {
       console.log(e);
+      isEndPage = true;
     });
 
   if (findComments) {  // 해당 게시글에 등록된 댓글이 있는 경우
@@ -95,6 +109,17 @@ function generatedPostsOwnerDetail(posts) {
   const ownerNickname = posts.owner.nickname;
   const postsDate = posts.createdAt;
 
+  let additionalContent = '';
+
+  console.log(`게시글 아이디 => ${posts.owner.memberId}`);
+  const commentsOwnerId = posts.owner.memberId;
+  if (commentsOwnerId === nowMemberId) {
+    additionalContent = `
+      <button class="edit-button" id="posts-edit-button" data-posts-id="${postsId}">수정</button>
+      <button class="delete-button" id="posts-delete-button" data-posts-id="${postsId}">삭제</button>
+    `;
+  }
+
   return `
     <div class="posts-detail-title"><h1>${title}</h1></div>
     <div class="posts-owner-detail-container">
@@ -106,8 +131,7 @@ function generatedPostsOwnerDetail(posts) {
         <div class="posts-date-time"><p>${postsDate}</p></div>
       </div>
       <div class="edit-button-container">
-        <button class="edit-button" id="posts-edit-button" data-posts-id="${postsId}">수정</button>
-        <button class="delete-button" id="posts-delete-button" data-posts-id="${postsId}">삭제</button>
+        ${additionalContent}
       </div>
     </div>
   `;
@@ -156,14 +180,23 @@ function generatedComment(comment) {
   const ownerNickname = comment.owner.nickname;
   const ownerProfile = comment.owner.profileImage;
 
+  let additionalContent = '';
+
+  const commentsOwnerId = comment.owner.memberId;
+  if (commentsOwnerId === nowMemberId) {
+    additionalContent = `
+      <button class="edit-button comments" data-comment-id="${commentId}">수정</button>
+      <button class="delete-button comments" data-comment-id="${commentId}">삭제</button>
+    `;
+  }
+
   return `
     <div class="comments-owner-info">
       <img src="${ownerProfile}" class="circle-image">
       <p><span class="highlight">${ownerNickname}</span></p>
       <p><span class="date-time">${commentsDate}</span></p>
       <div class="comments-button-container">
-        <button class="edit-button comments" data-comment-id="${commentId}">수정</button>
-        <button class="delete-button comments" data-comment-id="${commentId}">삭제</button>
+        ${additionalContent}
       </div>
     </div>
     <div class="comments-contents">${contents}</div>
@@ -286,15 +319,19 @@ function setPostsEvent() {
   const editButton = document.getElementById('posts-edit-button');
   const deleteButton = document.getElementById('posts-delete-button');
 
-  editButton.addEventListener('click', (event) => {
-    const element = event.target;
-    const postsId = element.getAttribute('data-posts-id');
-    location.href = `/posts/${postsId}/edit`;
-  });
+  if (editButton) {
+    editButton.addEventListener('click', (event) => {
+      const element = event.target;
+      const postsId = element.getAttribute('data-posts-id');
+      location.href = `/posts/${postsId}/edit`;
+    });
+  }
 
-  deleteButton.addEventListener('click', () => {
-    showPostsModal();
-  });
+  if (deleteButton) {
+    deleteButton.addEventListener('click', () => {
+      showPostsModal();
+    });
+  }
 }
 
 // 댓글 이벤트 등록
