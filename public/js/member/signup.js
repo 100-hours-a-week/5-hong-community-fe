@@ -1,5 +1,5 @@
 import { EMAIL_REGEX, NICKNAME_REGEX, PASSWORD_REGEX } from '../common/validate.js';
-import { postFetch } from '../common/utils.js';
+import { postFetch, uploadsImage } from '../common/utils.js';
 
 const profileField = document.getElementById('profile');
 const emailField = document.getElementById('email');
@@ -32,8 +32,11 @@ let fieldValidContext = {
   nickname: false,
 };
 
+// 이미지 url
+let imageUrl;
+
 // 프로필 이미지
-function profileImageChangeEvent() {
+async function profileImageChangeEvent() {
   const preview = document.getElementById('preview');
   const addSign = document.getElementById('image-add-sign');
 
@@ -44,11 +47,19 @@ function profileImageChangeEvent() {
   }
 
   const reader = new FileReader();
-  reader.addEventListener('load', (event) => {
-    preview.src = reader.result;
+  reader.addEventListener('load', async (event) => {
+    try {
+      imageUrl = await uploadsImage(file);
+    } catch (error) {
+      console.log(`이미지 업로드 실패, ${error}`);
+      return;
+    }
+
+    // console.log(`profileImageUrl => ${reader.result}`);
+    // preview.src = reader.result;
+    preview.src = imageUrl;
     preview.style.display = 'block';
     addSign.style.display = 'none';
-    console.log(`profileImageUrl => ${reader.result}`);
   }, false);
 
   reader.readAsDataURL(file);
@@ -191,7 +202,7 @@ async function isDuplicateNickname(nickname) {
 }
 
 // 버튼을 누를 수 있나? (모든 유효성 검사 통과?)
-async function checkEnableButton() {
+function checkEnableButton() {
   const isAllValid = Object.values(fieldValidContext).every(valid => valid === true);
   if (isAllValid) {
     signupButton.disabled = false;
@@ -211,7 +222,14 @@ async function signupButtonClickEvent(event) {
   const password = passwordField.value;
   const nickname = nicknameField.value;
 
-  await postFetch('/api/v1/members/signup', { email, password, nickname })
+  const requestBody = {
+    email,
+    password,
+    nickname,
+    profileImage: imageUrl,
+  };
+
+  await postFetch('/api/v1/members/signup', requestBody)
     .then(() => {
       // 회원가입 성공
       location.href = '/';

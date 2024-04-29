@@ -1,6 +1,7 @@
+const BASE_URL = 'http://localhost:8000';
+
 export async function getFetch(url) {
-  const baseUrl = 'http://localhost:8000';
-  const requestUrl = baseUrl + url;
+  const requestUrl = BASE_URL + url;
 
   return fetch(requestUrl, {
     headers: {
@@ -17,8 +18,7 @@ export async function getFetch(url) {
 }
 
 export async function postFetch(url, data) {
-  const baseUrl = 'http://localhost:8000';
-  const requestUrl = baseUrl + url;
+  const requestUrl = BASE_URL + url;
 
   return fetch(requestUrl, {
     headers: {
@@ -36,8 +36,7 @@ export async function postFetch(url, data) {
 }
 
 export async function putFetch(url, data) {
-  const baseUrl = 'http://localhost:8000';
-  const requestUrl = baseUrl + url;
+  const requestUrl = BASE_URL + url;
 
   return fetch(requestUrl, {
     headers: {
@@ -55,8 +54,7 @@ export async function putFetch(url, data) {
 }
 
 export async function deleteFetch(url) {
-  const baseUrl = 'http://localhost:8000';
-  const requestUrl = baseUrl + url;
+  const requestUrl = BASE_URL + url;
 
   return fetch(requestUrl, {
     headers: {
@@ -69,5 +67,32 @@ export async function deleteFetch(url) {
       return;
     }
     throw new Error();
+  });
+}
+
+/**
+ * 이미지 업로드
+ *
+ * @param image
+ * @returns {Promise<string>}
+ */
+export async function uploadsImage(image) {
+  const formData = new FormData();
+  formData.append('file', image);
+
+  const requestUrl = `${BASE_URL}/api/v1/uploads/image`;
+
+  return fetch(requestUrl, {
+    method: 'POST',
+    body: formData,
+    credentials: 'include',
+  }).then(response => {
+    if (response.ok) {
+      return response.json();
+    }
+    throw new Error();
+  }).then((jsonData) => {
+    const imageName = jsonData.filename;
+    return `${BASE_URL}/public/images/${imageName}`;
   });
 }

@@ -1,7 +1,8 @@
 import { NICKNAME_REGEX } from '../common/validate.js';
-import { deleteFetch, postFetch, putFetch } from '../common/utils.js';
+import { deleteFetch, getFetch, postFetch, putFetch, uploadsImage } from '../common/utils.js';
 
 const profileField = document.getElementById('profile');
+const profileEmail = document.querySelector('.profile-email');
 const nicknameField = document.getElementById('nickname');
 const nicknameHelper = document.getElementById('nickname-helper');
 const toastMessage = document.getElementById('toast-message');
@@ -19,9 +20,22 @@ showWithdrawButton.addEventListener('click', showWithdrawModalEvent);
 closeModalButton.addEventListener('click', closeModalButtonClickEvent);
 withdrawButton.addEventListener('click', withdrawButtonClickEvent);
 
+// 이미지
+let imageUrl;
+
 // 화면 로딩시 진행할 이벤트
-window.addEventListener('load', (event) => {
-  nicknameFieldInputEvent();
+window.addEventListener('load', async (event) => {
+  await nicknameFieldInputEvent();
+
+  await getFetch('/api/v1/members')
+    .then((jsonData) => {
+      const preview = document.getElementById('preview');
+      preview.src = jsonData.profileImage;
+      profileEmail.textContent = jsonData.email;
+    })
+    .catch((e) => {
+      console.log(e);
+    });
 });
 
 // 프로필 이미지
@@ -35,9 +49,17 @@ function profileFieldChangeEvent(event) {
   }
 
   const reader = new FileReader();
-  reader.addEventListener('load', (event) => {
-    preview.src = reader.result;
-    console.log(`profileImageUrl => ${reader.result}`);
+  reader.addEventListener('load', async (event) => {
+    try {
+      imageUrl = await uploadsImage(file);
+    } catch (error) {
+      console.log(`이미지 업로드 실패, ${error}`);
+      return;
+    }
+
+    // preview.src = reader.result;
+    // console.log(`profileImageUrl => ${reader.result}`);
+    preview.src = imageUrl;
   }, false);
 
   reader.readAsDataURL(file);
@@ -87,7 +109,6 @@ async function updateNicknameButtonClickEvent(event) {
   updateNicknameButton.disabled = true;
 
   const nickname = nicknameField.value;
-  // TODO: 일단 사용자 1번 기준으로함 (인증 인가 구현 완료 후 시작)
   await putFetch('/api/v1/members/nickname', { nickname })
     .then(() => {  // 닉네임 수정 성공
       showSuccessToastMessage();
@@ -108,13 +129,20 @@ function showSuccessToastMessage() {
   });
 }
 
-// TODO: 이미지 업로드 구현 후 완료
+// 이미지만 변경
 async function updateProfileButtonClickEvent(event) {
   event.preventDefault();
 
-  console.log('수정 완료 버튼 누름');
-
-  history.back();
+  const requestBody = {
+    profileImage: imageUrl,
+  };
+  await putFetch('/api/v1/members/profile', requestBody)
+    .then(() => {
+      location.href = '/main';
+    })
+    .catch((e) => {
+      console.log(e);
+    });
 }
 
 // 삭제 버튼 클릭 시 모달 열기
