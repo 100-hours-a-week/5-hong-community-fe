@@ -105,7 +105,7 @@ async function insertCommentsList() {
 function generatedPostsOwnerDetail(posts) {
   const postsId = posts.postsId;
   const title = posts.title;
-  const ownerProfileImage = posts.thumbnail;
+  const ownerProfileImage = posts.owner.profileImage;
   const ownerNickname = posts.owner.nickname;
   const postsDate = posts.createdAt;
 
