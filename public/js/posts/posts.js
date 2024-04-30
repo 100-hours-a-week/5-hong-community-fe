@@ -28,12 +28,33 @@ function infiniteScrollEvent() {
     return;
   }
 
-  if (window.innerHeight + window.scrollY >= document.body.offsetHeight) {
+  const scrollTop = document.documentElement.scrollTop;
+  const innerHeight = window.innerHeight;
+  const scrollHeight = document.body.scrollHeight;
+
+  if (scrollTop + innerHeight >= scrollHeight) {
+    showLoadingAnimation();
+
     isAlreadyFetch = true;
     setTimeout(() => {
-      insertHTML();
+      insertHTML()
+        .then(() => {
+          dropLoadingAnimation();
+        });
     }, 500);
   }
+}
+
+function showLoadingAnimation() {
+  console.log('로딩중 표시');
+  const target = document.querySelector('.loading-wrap');
+  target.style.display = 'flex';
+}
+
+function dropLoadingAnimation() {
+  console.log('로딩중 삭제');
+  const target = document.querySelector('.loading-wrap');
+  target.style.display = 'none';
 }
 
 async function insertHTML() {
